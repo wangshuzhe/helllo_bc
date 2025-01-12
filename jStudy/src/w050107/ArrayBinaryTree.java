@@ -59,4 +59,52 @@ public class ArrayBinaryTree {
         return res;
     }
 
+    /**
+     * 深度优先遍历
+     */
+    private void dfs(Integer i, String order, List<Integer> res) {
+        if (val(i) == null) {
+            return;
+        }
+        // 前序遍历
+        if ("pre".equals(order)) {
+            res.add(val(i));
+        }
+        dfs(left(i), order, res);
+        //中序遍历
+        if ("in".equals(order)) {
+            res.add(val(i));
+        }
+        //后序遍历
+        if ("post".equals(order)) {
+            res.add(val(i));
+        }
+    }
+
+    /**
+     * 前序遍历
+     */
+    public List<Integer> preOreder() {
+        List<Integer> res = new ArrayList<>();
+        dfs(0, "pre", res);
+        return res;
+    }
+
+    /**
+     * 中序遍历
+     */
+    public List<Integer> inOrder() {
+        List<Integer> res = new ArrayList<>();
+        dfs(0, "in", res);
+        return res;
+    }
+
+    /**
+     * 后序遍历
+     */
+    public List<Integer> postOrder() {
+        List<Integer> res = new ArrayList<>();
+        dfs(0, "post", res);
+        return res;
+    }
 }
