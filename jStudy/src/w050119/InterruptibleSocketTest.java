@@ -46,7 +46,7 @@ class InterruptibleSocketFrame extends JFrame {
         final int TEST_COLUMNS = 60;
         messages = new JTextArea(TEST_ROWS, TEST_COLUMNS);
         add(new JScrollPane(messages));
-//        interruptibleButton = new JButton("Interruptible");
+        interruptibleButton = new JButton("Interruptible");
         blockingButton = new JButton("Blocking");
         northPanel.add(interruptibleButton);
         northPanel.add(blockingButton);
