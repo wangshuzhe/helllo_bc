@@ -28,21 +28,25 @@ public class InterruptibleSocketTest {
 }
 class InterruptibleSocketFrame extends JFrame {
     private Scanner in;
+    //按钮
     private JButton interruptibleButton;
     private JButton blockingButton;
     private JButton cancelButton;
+    //文本区域
     private JTextArea messages;
     private TestServer server;
     private Thread connectThread;
 
+    //构造方法
     public InterruptibleSocketFrame() throws HeadlessException{
+        //创建面板
         JPanel northPanel = new JPanel();
         add(northPanel, BorderLayout.NORTH);
         final int TEST_ROWS = 20;
         final int TEST_COLUMNS = 60;
         messages = new JTextArea(TEST_ROWS, TEST_COLUMNS);
         add(new JScrollPane(messages));
-        interruptibleButton = new JButton("Interruptible");
+//        interruptibleButton = new JButton("Interruptible");
         blockingButton = new JButton("Blocking");
         northPanel.add(interruptibleButton);
         northPanel.add(blockingButton);
@@ -50,15 +54,22 @@ class InterruptibleSocketFrame extends JFrame {
             interruptibleButton.setEnabled(false);
             blockingButton.setEnabled(false);
             cancelButton.setEnabled(true);
+
             connectThread = new Thread(() ->
             {
                 try {
                     connectInterruptibly();
                 } catch (Exception e) {
                     throw new RuntimeException(e);
+                } finally {
+                    System.out.println("1");
                 }
+/*
+                耻辱，把启动线程的语句放在创建线程里了，我说怎么一直没启动 以此作为提醒
                 connectThread.start();
+*/
             });
+            connectThread.start();
         });
         blockingButton.addActionListener(event -> {
             interruptibleButton.setEnabled(false);
@@ -85,12 +96,15 @@ class InterruptibleSocketFrame extends JFrame {
         pack();
     }
     /**
-     * Connects to the test server, using interruptible I/O.
+     * Connects to the test server, using interruptible I/O. 不好使
      */
     public void connectInterruptibly() throws IOException {
         messages.append("Interruptible:\n");
-        try(SocketChannel channel = SocketChannel.open(new InetSocketAddress("localhost", 8189))){
+        //创建套接字 通道
+        try(SocketChannel channel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 8189))){
+            //创建扫描仪
             in = new Scanner(channel, "UTF-8");
+            //校验线程是否被中断, 当前方法不会清除中断状态
             while (!Thread.currentThread().isInterrupted())
             {
                 messages.append("Reading ");
@@ -105,12 +119,13 @@ class InterruptibleSocketFrame extends JFrame {
             {
                 messages.append("Channel closed\n");
                 interruptibleButton.setEnabled(true);
+                blockingButton.setEnabled(true);
             });
         }
     }
     public void connectBlocking() throws IOException {
         messages.append("Blocking:\n");
-        try (Socket sock = new Socket("localhost", 8189)) {
+        try (Socket sock = new Socket("127.0.0.1", 8189)) {
             in = new Scanner(sock.getInputStream(), "UTF-8");
             while (!Thread.currentThread().isInterrupted()) {
                 messages.append("Reading ");
@@ -128,49 +143,50 @@ class InterruptibleSocketFrame extends JFrame {
             });
         }
     }
-}
-class TestServer  implements Runnable{
 
-
-    @Override
-    public void run() {
-        try (ServerSocket s = new ServerSocket(8189)) {
-            while (true) {
-                Socket incoming = s.accept();
-                Runnable runnable = new TestServerHandler(incoming);
-                Thread thread = new Thread(runnable);
-                thread.start();
+    class TestServer  implements Runnable{
+        @Override
+        public void run() {
+            try (ServerSocket s = new ServerSocket(8189)) {
+                while (true) {
+                    Socket incoming = s.accept();
+                    Runnable runnable = new TestServerHandler(incoming);
+                    Thread thread = new Thread(runnable);
+                    thread.start();
+                }
+            } catch (IOException e) {
+                messages.append("\nTestServer.run:" + e);
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
-}
 
-class TestServerHandler implements Runnable {
+    class TestServerHandler implements Runnable {
 
-    private Socket incoming;
-    private int counter;
-    public TestServerHandler(Socket i) {
-        incoming = i;
-    }
-    @Override
-    public void run() {
-        try {
-            OutputStream outputStream = incoming.getOutputStream();
-            PrintWriter out = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"), true);
-            while(counter < 1000) {
-                counter++;
-                if (counter <= 10)
-                    out.println(counter);
-                Thread.sleep(100);
-            }
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally {
+        private Socket incoming;
+        private int counter;
+        public TestServerHandler(Socket i) {
+            incoming = i;
+        }
+        @Override
+        public void run() {
             try {
-                incoming.close();
-            } catch (IOException e) {
+                try {
+                    OutputStream outputStream = incoming.getOutputStream();
+                    PrintWriter out = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"), true);
+                    while(counter < 100) {
+                        counter++;
+                        if (counter <= 10)
+                            out.println(counter);
+                        Thread.sleep(100);
+                    }
+                }finally {
+                    incoming.close();
+                    messages.append("closing server\n");
+                }
+            }
+            catch (Exception e) {
+                messages.append("\nTestServerHandler.run:" + e);
                 throw new RuntimeException(e);
             }
         }
