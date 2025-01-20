@@ -73,6 +73,7 @@ public class PostTest {
                 response.append("\n");
             }
         } catch (IOException e) {
+            //返回一个流，通过这个流可以读取Web服务器的错误信息
             InputStream err = connection.getErrorStream();
             if (err == null )
                 throw e;
