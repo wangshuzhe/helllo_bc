@@ -1,0 +1,5 @@
+/.idea/
+*.iml
+/lc/target/
+/out/
+/LinkUp/target/
