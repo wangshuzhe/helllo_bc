@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ws.fjj.fuds.dao.FudsFileDao" >
+    <insert id="saveFudsFile" parameterType="com.ws.fjj.fuds.dao.FudsFileDao">
+        insert into file_upload_info (id,name,path,uploadtime) values (#{file.id},#{file.name},#{file.path},#{file.uploadTime})
+    </insert>
+</mapper>
