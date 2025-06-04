@@ -133,4 +133,21 @@ public class TestDefaultController {
         SampleHandler sampleHandler = new SampleHandler();
         controller.addHandler(request1, sampleHandler);
     }
+
+    /**
+     * 测试运行时间是否超时
+     */
+    @Test(timeout = 130)
+    public void testProcessMultipleRequestsTimeout() {
+        Request request1;
+        Response sampleResponse = new SampleResponse();
+        SampleHandler sampleHandler = new SampleHandler();
+        for (int i = 0; i < 99999; i++) {
+            request1 = new SampleRequest(String.valueOf(i));
+            controller.addHandler(request1, sampleHandler);
+            sampleResponse = controller.processRequest(request1);
+            assertNotNull(sampleResponse);
+            assertEquals(SampleResponse.class, sampleResponse.getClass());
+        }
+    }
 }
