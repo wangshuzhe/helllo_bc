@@ -1,6 +1,7 @@
 package junitT.chapter3;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -136,8 +137,10 @@ public class TestDefaultController {
 
     /**
      * 测试运行时间是否超时
+     * @Ignore 属性可以忽略测试方法
      */
     @Test(timeout = 130)
+    @Ignore(value = "Ignore for now until we decide a decent time limit")
     public void testProcessMultipleRequestsTimeout() {
         Request request1;
         Response sampleResponse = new SampleResponse();
