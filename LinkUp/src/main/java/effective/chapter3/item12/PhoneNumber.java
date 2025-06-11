@@ -39,7 +39,7 @@ public class PhoneNumber {
      * 返回该电话号码的字符串表示形式,字符串由12个字符组成，格式为 “XXX-YYY- zzzz”。
      * 其中XXX为区号,YYY为前缀，ZZZZ为行号。 如果电话号码的长度不够对应位置的大小，那么就自动补上 0
      *
-     * @param args
+     *
      */
     @Override
     public String toString() {
