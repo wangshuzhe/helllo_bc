@@ -1,6 +1,4 @@
-package effective.chapter3.item10;
-
-import java.util.Objects;
+package effective.chapter3.item11.nohash;
 
 public class PhoneNumber {
     private final short areaCode, prefix, lineNum;
