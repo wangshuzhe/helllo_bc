@@ -88,8 +88,14 @@ public class PhoneNumber implements Cloneable, Comparable<PhoneNumber>{
     }
     public static void main(String[] args) {
         NavigableSet<PhoneNumber> s = new TreeSet<>();
+        PhoneNumber p = new PhoneNumber(707, 867, 5309);
+        PhoneNumber p2 = p.clone();
+        s.add(p2);
         for (int i = 0; i < 10; i++) {
             s.add(randomPhoneNumber());
+        }
+        for (PhoneNumber pn : s) {
+            System.out.println(pn.compareTo(p));
         }
         System.out.println(s);
     }
