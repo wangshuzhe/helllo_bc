@@ -63,4 +63,20 @@ public class Complex {
     public String toString() {
         return "(" + re + " + " + im + ")";
     }
+
+    public static void main(String[] args) {
+        Complex c = new Complex(1.2, 2.3);
+        Complex d = new Complex(3.1, 4.5);
+        Complex e = new Complex(3.1, 4.5);
+        System.out.println("plus结果:");
+        System.out.println(c.plus(d).toString());
+        System.out.println("minus结果:");
+        System.out.println(c.minus(d).toString());
+        System.out.println("equals结果:");
+        System.out.println(d.equals(e));
+        System.out.println("times结果:");
+        System.out.println(c.times(d).toString());
+        System.out.println("dividedBy结果:");
+        System.out.println(c.dividedBy(d).toString());
+    }
 }
